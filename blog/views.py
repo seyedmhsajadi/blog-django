@@ -1,0 +1,99 @@
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse#, http404
+from django.views.generic import ListView, DetailView
+
+from .forms import TicketForm, CommentForm
+from . models import *
+#from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.http import require_POST
+
+# Create your views here.
+
+def index(request):
+    context={'':''
+
+             }
+    return render(request, "blog/index.html", context)
+
+
+
+#    return HttpResponse("Hello, world. You're at the polls index.")
+
+#def posts_list(request):
+#    posts = Post.published.all()
+#    paginator = Paginator(posts, 2)
+#    page_number = request.GET.get('page', 1)
+#    try:
+#        posts = paginator.page(page_number)
+#    except PageNotAnInteger:
+#        posts = paginator.page(1)
+#    except EmptyPage:
+#       posts = paginator.page(paginator.num_pages)
+#    context = {
+#        'posts': posts,
+#    }
+#    return render(request,'blog/list.html',context)
+
+class PostListView(ListView):
+    queryset = Post.published.all()
+    context_object_name = 'posts'
+    paginate_by = 2
+    template_name = "blog/list.html"
+
+def posts_detail(request, pk):
+    post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
+    comments = post.comments.filter(active=True)
+    form = CommentForm()
+   # try:
+    #    post = Post.published.get(id=id)
+    #except Post.DoesNotExist:
+    #    raise Http404("Post does not exist")
+    context = {
+        'post': post,
+        'form': form,
+        'comments': comments
+    }
+    return render(request,"blog/detail.html",context)
+
+
+'''
+class PostDetailView(DetailView):
+    model = Post
+    template_name = "blog/detail.html"
+    '''
+
+def ticket(request):
+    if request.method == "POST":
+        form = TicketForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            ticket_obj = Ticket(
+                name=cd['name'],
+                email=cd['email'],
+                phone=cd['phone'],
+                subject=cd['subject'],
+                message=cd['message'],
+            )
+            ticket_obj.save()
+
+            return redirect("blog:index")
+
+    else:
+        form = TicketForm()
+    return render(request, "forms/ticket.html",{'form':form})
+
+@require_POST
+def post_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id,status=Post.Status.PUBLISHED)
+    comment = None
+    form = CommentForm(data=request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.save()
+    context = {
+            'post': post,
+            'form': form,
+            'comment': comment,
+        }
+    return render(request, "forms/comment.html", context)
