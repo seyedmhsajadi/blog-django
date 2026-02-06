@@ -1,5 +1,6 @@
 from django import forms
-from .models import Comment
+from .models import Comment, Post
+
 
 class TicketForm(forms.Form):
     SUBJECT_CHOICES = (
@@ -45,3 +46,7 @@ class CommentForm(forms.ModelForm):
                 return name
         return None
 
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title', 'description', 'author',)

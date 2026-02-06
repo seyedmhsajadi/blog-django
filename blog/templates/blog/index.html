@@ -15,4 +15,27 @@
         <br>
         <a href="{{ post.get_absolute_url }}">{{ post.title }}: with {{ post.comment_count }} comments</a>
     {% endfor %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-messages alert-{{ message.tags }}">
+             {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% if user.is_authenticated %}
+    <div class="post-form">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-btn">Publish Post</button>
+        </form>
+    </div>
+{% else %}
+    <div class="alert-messages alert-error">
+        To submit a post, please <a href="/admin/login/?next={{ request.path }}">Login to your account</a> first.
+    </div>
+{% endif %}
+
 {% endblock %}

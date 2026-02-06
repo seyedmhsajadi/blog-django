@@ -7,3 +7,48 @@
     color: blue;
     background-color: yellow;
 }
+
+.alert-messages {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-family: tahoma, arial, sans-serif;
+    font-size: 14px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+/* استایل مخصوص پیام خطا */
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* استایل فرم */
+.post-form {
+    background: #fdfdfd;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 500px;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}

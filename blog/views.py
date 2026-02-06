@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse#, http404
+from django.utils.text import slugify
 from django.views.generic import ListView, DetailView
+from django.contrib import messages
 
-from .forms import TicketForm, CommentForm
+from .forms import TicketForm, CommentForm, PostForm
 from . models import *
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.http import require_POST
@@ -10,9 +12,23 @@ from django.views.decorators.http import require_POST
 # Create your views here.
 
 def index(request):
-    context={'':''
-
-             }
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = PostForm(request.POST)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.author = request.user
+                post.slug = slugify(post.title, allow_unicode=True)
+                post.reading_time = 0
+                post.save()
+                messages.success(request, 'Your post was successfully posted')
+                return redirect('/blog')
+        else:
+            messages.error(request, 'You are not logged in')
+            return redirect('/blog')
+    else:
+        form = PostForm()
+    context={'form':form}
     return render(request, "blog/index.html", context)
 
 
