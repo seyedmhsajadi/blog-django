@@ -1,10 +1,11 @@
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse#, http404
 from django.utils.text import slugify
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
 
-from .forms import TicketForm, CommentForm, PostForm
+from .forms import TicketForm, CommentForm, PostForm, PostSearch
 from . models import *
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.http import require_POST
@@ -113,3 +114,18 @@ def post_comment(request, post_id):
             'comment': comment,
         }
     return render(request, "forms/comment.html", context)
+
+
+def post_search(request):
+    query = None
+    results = []
+    form = PostSearch(data=request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        results = Post.published.filter(title__icontains=query)
+    context = {"query" : query,
+               "results" : results,
+               }
+    return render(request, "blog/search.html", context)
+
+

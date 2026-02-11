@@ -5,6 +5,8 @@
 {% if comment %}
     کامنت شما ثبت شد.
     <a href="{{ post.get_absolute_url }}">بازگشت به پست</a>
+
+    <!-- این فرم مال زمانی هست که مثلا ما اعتتبار سنجی کردیم و اطلاعات غلط هست خطا رو هم در فایل form.py بصورت raise قرار دادیم-->
 {% else %}
   <form method="post">
       {% csrf_token %}

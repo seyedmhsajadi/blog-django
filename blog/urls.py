@@ -11,7 +11,9 @@ urlpatterns = [
    # path('posts/<int:id>/', views.posts_detail, name='posts_detail'),
     path('ticket', views.ticket, name='ticket'),
     path('posts/<pk>/', views.posts_detail, name="posts_detail"),
-    path('posts/<post_id>/comment', views.post_comment, name="post_comment")
+    path('posts/<post_id>/comment', views.post_comment, name="post_comment"),
+
+    path('search', views.post_search, name='post_search'),
 
 
 

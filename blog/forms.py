@@ -2,6 +2,7 @@ from django import forms
 from .models import Comment, Post
 
 
+
 class TicketForm(forms.Form):
     SUBJECT_CHOICES = (
     ('پیشنهاد', 'پیشنهاد'),
@@ -50,3 +51,8 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'description', 'author',)
+
+
+class PostSearch(forms.Form):
+    query = forms.CharField()
+
