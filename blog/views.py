@@ -9,6 +9,7 @@ from .forms import TicketForm, CommentForm, PostForm, PostSearch
 from . models import *
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.http import require_POST
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 
 # Create your views here.
 
@@ -122,10 +123,31 @@ def post_search(request):
     form = PostSearch(data=request.GET)
     if form.is_valid():
         query = form.cleaned_data['query']
-        results = Post.published.filter(title__icontains=query)
+        results = Post.published.annotate(similarity=TrigramSimilarity('title', query))\
+        .filter(similarity__gt=0.1).order_by('-similarity')
     context = {"query" : query,
                "results" : results,
                }
     return render(request, "blog/search.html", context)
 
 
+
+# simple search without postgres just django
+#        results = Post.published.filter(title__icontains=query)
+
+# multi search field with vector instead of Q object
+#         results = Post.published.annotate(search=SearchVector('title','description')).\
+#             filter(search=query).order_by('-search')
+
+# advanced search with SearchQuery & rank and weight filtering
+# in this code SearchVector is responsible for handling multi field search
+#         search_query = SearchQuery(query)
+#         search_vector = SearchVector('title', weight='B') + SearchVector('description', weight='A')
+#         results = Post.published.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).\
+#              filter(rank__gte=0.5).order_by('-rank')
+
+# search without wieght filtering just ranking
+#         search_query = SearchQuery(query)
+#         search_vector = SearchVector('title', 'description')
+#         results = Post.published.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).\
+#               filter(search=search_query).order_by('-rank')

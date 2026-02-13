@@ -1,7 +1,6 @@
 {% block title %}post search{% endblock %}
 
     <form method="get" action="{% url "blog:post_search" %}">
-    {% csrf_token %}
     <input name="query" type="text" placeholder="متن جستوجو را وارد کنید.">
     <input type="submit" value="جستوجو" >
 
