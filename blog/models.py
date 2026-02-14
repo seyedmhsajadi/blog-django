@@ -88,16 +88,19 @@ class Comment(models.Model):
         return f'{self.name} : {self.post}'
 
 
+def images_path(instance, filename):
+    now = timezone.now().year
+    return f'post_images/{instance.post.author.username}/{now}/{filename}'
 
 class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images', verbose_name="تصویر")
-    image_file = ResizedImageField(upload_to="post_images/", size=[500,500], crop=['middle', 'center'])
+    image_file = ResizedImageField(upload_to=images_path, size=[500,500], crop=['middle', 'center'])
     title = models.CharField(max_length=250, verbose_name="عنوان", null=True, blank=True)
     description = models.TextField(verbose_name="توضیحات", null=True, blank=True)
     created = jmodels.jDateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.title if self.title else 'None'
+        return self.title if self.title else self.image_file.name
 
     class Meta:
         ordering = ['created']

@@ -14,7 +14,7 @@ import django_jalali.admin as jadmin
 #admin.sites.AdminSite.index_title = "پنل مدیریت"
 
 
-class ImageInline(admin.TabularInline):
+class ImageInline(admin.StackedInline):
     model = Image
     extra = 0
 

@@ -10,6 +10,7 @@ from . models import *
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.http import require_POST
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
+from django.db.models.functions import Greatest
 
 # Create your views here.
 
@@ -123,8 +124,10 @@ def post_search(request):
     form = PostSearch(data=request.GET)
     if form.is_valid():
         query = form.cleaned_data['query']
-        results = Post.published.annotate(similarity=TrigramSimilarity('title', query))\
-        .filter(similarity__gt=0.1).order_by('-similarity')
+        results = Post.published.annotate(similarity=Greatest(TrigramSimilarity('title', query),\
+                                                              TrigramSimilarity('description', query),\
+                                                              TrigramSimilarity('images__title', query)))\
+        .filter(similarity__gt=0.1).order_by('-similarity').distinct()
     context = {"query" : query,
                "results" : results,
                }

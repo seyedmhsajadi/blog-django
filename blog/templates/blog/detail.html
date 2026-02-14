@@ -6,9 +6,8 @@
 
     <h2>{{ post.title }} by {{ post.author }}</h2>
     <div>
-    {% for img in post.images.all %}
-        <img src="{{ img.image_file.url }}" alt="{{ img.title }}">
-    {% endfor %}
+    {% with img=post.images.all %}
+        <img src="{{ img.1.image_file.url }}" alt="{{ img.0.title }}">
     </div>
     <p>
     {{ post.description | markdown }}
@@ -16,6 +15,8 @@
     <hr>
     <p>{{post.publish}}</p>
     <hr>
+        <img src="{{ img.1.image_file.url }}" alt="{{ img.0.title }}">
+    {% endwith %}
     <div>
     {% with comments.count as cm_count %}
         <!--{{ comments.count }} comment{{ comments.count|pluralize }}-->
