@@ -1,3 +1,5 @@
+from symtable import Class
+
 from django.contrib import admin
 from .models import *
 from django_jalali.admin.filters import JDateFieldListFilter
@@ -11,6 +13,15 @@ import django_jalali.admin as jadmin
 #admin.sites.AdminSite.site_title = "پنل"
 #admin.sites.AdminSite.index_title = "پنل مدیریت"
 
+
+class ImageInline(admin.TabularInline):
+    model = Image
+    extra = 0
+
+class CommentInline(admin.TabularInline):
+    model = Comment
+    extra = 0
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'status', 'publish']
@@ -22,6 +33,7 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     list_editable = ['status']
     #list_display_links = ['author']
+    inlines = [ImageInline, CommentInline]
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
@@ -34,3 +46,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['active']
     search_fields = ['name', 'body']
     list_editable = ['active']
+
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ['post', 'title', 'created']

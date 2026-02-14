@@ -4,6 +4,7 @@
     {% for post in posts %}
         <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
         <p>{{ post.description|truncatewords:1 }}</p>
+        <img width="300" height="150" src="{{ post.images.first.image_file.url }}" alt="{{ post.images.first.title }}">
     {% endfor %}
 
 
