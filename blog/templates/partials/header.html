@@ -1,7 +1,10 @@
-{% block title %}post search{% endblock %}
-
-    <form method="get" action="{% url "blog:post_search" %}">
+ <form method="get" action="{% url "blog:post_search" %}">
     <input name="query" type="text" placeholder="متن جستوجو را وارد کنید.">
     <input type="submit" value="جستوجو" >
-
     </form>
+
+
+<p>
+    <a href="{% url "blog:profile" %}">پروفایل</a>
+</p>
+<br>

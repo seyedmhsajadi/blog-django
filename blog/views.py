@@ -154,3 +154,9 @@ def post_search(request):
 #         search_vector = SearchVector('title', 'description')
 #         results = Post.published.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).\
 #               filter(search=search_query).order_by('-rank')
+
+
+def profile(request):
+    user = request.user
+    posts = Post.published.filter(author=user)
+    return render(request, "blog/profile.html", {'posts':posts})
