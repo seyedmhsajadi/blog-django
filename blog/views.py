@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
 
-from .forms import TicketForm, CommentForm, PostForm, PostSearch
+from .forms import TicketForm, CommentForm, PostForm, PostSearch, CreatePostForm
 from . models import *
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.http import require_POST
@@ -160,3 +160,28 @@ def profile(request):
     user = request.user
     posts = Post.published.filter(author=user)
     return render(request, "blog/profile.html", {'posts':posts})
+
+def create_post(request):
+    if request.method == "POST":
+        form = CreatePostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.slug = slugify(post.title, allow_unicode=True)
+            post.save()
+            Image.objects.create(image_file=form.cleaned_data['img1'], post=post)
+            Image.objects.create(image_file=form.cleaned_data['img2'], post=post)
+
+            return redirect("blog:profile")
+    else:
+        form = CreatePostForm()
+    return render(request, "forms/create-post.html", {'form':form})
+
+
+def delete_post(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    if request.method == "POST":
+        post.delete()
+        return redirect("blog:profile")
+    else:
+        return render(request, 'forms/delete-post.html', {'post':post})

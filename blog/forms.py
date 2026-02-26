@@ -56,3 +56,10 @@ class PostForm(forms.ModelForm):
 class PostSearch(forms.Form):
     query = forms.CharField()
 
+class CreatePostForm(forms.ModelForm):
+    img1 = forms.ImageField(label='تصویر اول')
+    img2 = forms.ImageField(label='تصویر دوم')
+    class Meta:
+        model = Post
+        fields = ('title', 'description', 'reading_time')
+
